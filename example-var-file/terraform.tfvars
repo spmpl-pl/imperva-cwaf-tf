@@ -1,6 +1,6 @@
-APIID=""
+APIID="" 
 APIKEY=""
-WebsiteFQDN="terraform.spm.pl"
-WebsiteIP="20.215.145.47"
-OriginPOP="war"
+WebsiteFQDN="example.com"
+WebsiteIP="0.0.0.0"
+OriginPOP=""
 
