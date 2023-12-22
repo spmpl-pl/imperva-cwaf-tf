@@ -22,7 +22,7 @@ provider "incapsula" {
 
 ## Create a website
 ##
-resource "incapsula_site" "terraform-site" {
+resource "incapsula_site" "website" {
   domain = var.WebsiteFQDN
   data_storage_region = "EU"
   site_ip = var.WebsiteIP 
@@ -32,7 +32,7 @@ resource "incapsula_site" "terraform-site" {
 ## Configure DC settings and setting origin pop to Warsaw
 ##
 resource "incapsula_data_centers_configuration" "dc-config" {
-  site_id = incapsula_site.terraform-site.id
+  site_id = incapsula_site.website.id
   site_topology = "SINGLE_SERVER"
 
 
@@ -50,8 +50,8 @@ resource "incapsula_data_centers_configuration" "dc-config" {
 
 ## Modify Website DDoS Settings
 ##
-resource "incapsula_waf_security_rule" "terraform-waf-ddos-rule" {
-  site_id                = incapsula_site.terraform-site.id
+resource "incapsula_waf_security_rule" "ddos-settings" {
+  site_id                = incapsula_site.website.id
   rule_id                = "api.threats.ddos"
   activation_mode        = "api.threats.ddos.activation_mode.auto"
   ddos_traffic_threshold = "100"
@@ -59,7 +59,7 @@ resource "incapsula_waf_security_rule" "terraform-waf-ddos-rule" {
 
 ## Create WAF ACL Policy to block two specific IPs
 ##
-resource "incapsula_policy" "terraform-policy" {
+resource "incapsula_policy" "waf-acl-policy" {
   name        = "Terraform ACL Policy"
   enabled     = true 
   policy_type = "ACL"
@@ -84,14 +84,14 @@ POLICY
 ## Attach the WAF ACL Policy to the new website
 ##
 resource "incapsula_policy_asset_association" "terraform-policy-asset-association" { 
-  policy_id = incapsula_policy.terraform-policy.id
-  asset_id = incapsula_site.terraform-site.id
+  policy_id = incapsula_policy.waf-acl-policy.id
+  asset_id = incapsula_site.website.id
   asset_type = "WEBSITE"
 }
 
 ## Create WAF Rules Policy in blocking mode with one exception in Illegal Resource Access
 ##
-resource "incapsula_policy" "terraform-waf-policy" {
+resource "incapsula_policy" "waf-policy" {
     name        = "Terraform WAF Policy"
     enabled     = true 
     policy_type = "WAF_RULES"
@@ -136,8 +136,8 @@ resource "incapsula_policy" "terraform-waf-policy" {
 ## Attach the WAF Rules Policy to the new website
 ##
 resource "incapsula_policy_asset_association" "terraform-waf-policy-asset-association" { 
-  policy_id = incapsula_policy.terraform-waf-policy.id
-  asset_id = incapsula_site.terraform-site.id
+  policy_id = incapsula_policy.waf-policy.id
+  asset_id = incapsula_site.website.id
   asset_type = "WEBSITE"
 }
 
@@ -146,7 +146,7 @@ resource "incapsula_policy_asset_association" "terraform-waf-policy-asset-associ
 ##
 resource "incapsula_incap_rule" "rule-geo" {
   name    = "Block Requests from outside of Poland and Germany"
-  site_id = incapsula_site.terraform-site.id
+  site_id = incapsula_site.website.id
   action  = "RULE_ACTION_BLOCK"
   filter  = "CountryCode != PL;DE"
 }
@@ -155,7 +155,7 @@ resource "incapsula_incap_rule" "rule-geo" {
 ##
 resource "incapsula_incap_rule" "rule-addheader" {
   name    = "Add POP to the header"
-  site_id = incapsula_site.terraform-site.id
+  site_id = incapsula_site.website.id
   action           = "RULE_ACTION_REWRITE_HEADER"
   filter           = "Method == GET;POST"
   add_missing      = "true"
