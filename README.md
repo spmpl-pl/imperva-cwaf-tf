@@ -1,6 +1,6 @@
 # Imperva WAF example Terraform package.
 
-This is a sample terraform project that configures one website, two policies (ACL and WAF), changes DDoS and Origin Server settings, and adds two sample rules (incap rule).
+This is a sample terraform project that configures one website, two policies associated with the website (ACL and WAF), DDoS and Origin Server settings, and adds two sample rules (incap rule). 
 
 ## Please use the following actions to use it:
 
