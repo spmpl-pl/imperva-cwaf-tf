@@ -23,9 +23,9 @@ provider "incapsula" {
 ## Create a website
 ##
 resource "incapsula_site" "terraform-site" {
-  domain = "terraform.spm.pl"
+  domain = var.WebsiteFQDN
   data_storage_region = "EU"
-  site_ip = "20.215.145.47"
+  site_ip = var.WebsiteIP 
 }
 
 
@@ -41,10 +41,10 @@ resource "incapsula_data_centers_configuration" "dc-config" {
     ip_mode = "MULTIPLE_IP"
 
     origin_server {
-      address = "20.215.145.47"
+      address = var.WebsiteIP
       is_active = true
     }
-    origin_pop = "war"
+    origin_pop = var.OriginPOP
     }
 }
 
