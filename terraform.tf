@@ -8,7 +8,7 @@ terraform {
   required_providers {
     incapsula = {
       source = "imperva/incapsula"
-      version = "3.21.0"
+      version = ">= 3.21.0"
     }
   }
 }
@@ -148,7 +148,7 @@ resource "incapsula_incap_rule" "rule-geo" {
   name    = "Block Requests from outside of Poland and Germany"
   site_id = incapsula_site.website.id
   action  = "RULE_ACTION_BLOCK"
-  filter  = "CountryCode != PL;DE"
+  filter  = "CountryCode != DE"
 }
 
 ## Create new IncapRule to add new "INCAPPOP" header with a POP name
@@ -157,7 +157,7 @@ resource "incapsula_incap_rule" "rule-addheader" {
   name    = "Add POP to the header"
   site_id = incapsula_site.website.id
   action           = "RULE_ACTION_REWRITE_HEADER"
-  filter           = "Method == GET;POST"
+  filter           = "Method == GET"
   add_missing      = "true"
   rewrite_existing = "false"
   to               = "$pop"

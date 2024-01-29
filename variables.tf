@@ -1,11 +1,13 @@
 variable "APIID" {
   type        = string
   description = "API Key ID to access UMC"
+  sensitive   = true
 }
 
 variable "APIKEY" {
   type        = string
   description = "API Key to access UMC"
+  sensitive   = true
 }
 
 variable "WebsiteFQDN" {
